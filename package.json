@@ -1,0 +1,11 @@
+{
+  "engines": {
+    "node": "12.x"
+  },
+  "name": "workflows-example",
+  "description": "Vend Workflows - Business Rule Remote example",
+  "repository": "github:vend/workflows-example",
+  "version": "1.0.0",
+  "main": "api/index.js",
+  "license": "MIT"
+}
