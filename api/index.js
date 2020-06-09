@@ -1,12 +1,15 @@
-import readyForPayment from './_events/readyForPayment'
+import lineItemsChanged from "./_events/lineItemsChanged";
+import readyForPayment from './_events/readyForPayment';
+import saleCreated from './_events/readyForPayment';
 
 async function workflow(event) {
   console.log('Event:', event);
 
   const events = {
     'sale.ready_for_payment': readyForPayment,
-    'sale.line_item_added': null, // Not yet supported
+    'sale.line_items.added': lineItemsChanged, // Not yet supported
     'sale.customer_added': null, // Not yet supported
+    'sale.created': saleCreated, // Not yet supported
   };
 
   if (typeof events[event.event_type] === 'undefined') {
