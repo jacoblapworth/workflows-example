@@ -1,26 +1,21 @@
 import * as Actions from '../_actions'
+import { getValueForCustomField } from "../_utils/customFields";
 
 function lineItemActions(lineItem, ctx) {
-  const actions = {
-    '4e9a7ef1-baa2-b269-6122-6df46aab4b2e': Actions.stopAction,
-    '48cdce72-8f4a-58a7-c376-6dfccbfe23e2': Actions.confirmAction,
-    'ae7cc7ab-7ff7-0d63-0327-b90801994f82': Actions.requireIMEIAction,
-    '406ce5ae-cf72-6b6c-eb0e-422bf6e66e41': Actions.booleanAction,
-    'a9d42b88-06c3-b260-508d-bfdfdab7df86': Actions.requireAgeVerification,
-    '86a63c16-6a21-0906-5d64-b79236dba474': Actions.tourTimeAction,
-    'a584c971-9dfa-c919-f8ee-91a58938ea18': Actions.requireCustomerAction,
-    '3ef832e7-a556-d0b0-bfe7-5c62927fb5c4': Actions.redeemReward,
-    'c879df57-c246-f98b-1caf-059f6f69ee44': Actions.formAction,
-  };
+  /*
+  Look for a custom field on the line_item's product called "demo_rule"
+  Use the value to call an action of the same name
+  */
 
-  const productId = lineItem.product_id.toLowerCase();
+  const rule = getValueForCustomField(lineItem.custom_fields, 'demo_rule')
 
-  if (typeof actions[productId] === 'undefined') {
-    return null;
+  if (typeof Actions[rule] === 'undefined') {
+    throw new Error("No action with that name.")
   }
 
-  const action = actions[productId](lineItem, ctx);
-  return action;
+  const ruleAction = Actions[rule](lineItem, ctx)
+
+  return ruleAction;
 }
 
 export default function readyForPayment(event) {
