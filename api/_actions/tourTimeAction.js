@@ -1,13 +1,19 @@
-import { WORKFLOW_ACTIONS } from "../_constants";
-import { getValueForCustomField } from "../_utils/customFields";
+import { WORKFLOW_ACTIONS } from '../_constants'
+import { getValueForCustomField } from '../_utils/customFields'
 
-export function tourTimeAction(lineItem, ctx) {
-  const CUSTOM_FIELD_NAME = 'tour-datetime';
-  const tour_datetime = getValueForCustomField(lineItem.custom_fields, CUSTOM_FIELD_NAME);
+export function tourTimeAction(lineItem) {
+  const CUSTOM_FIELD_NAME = 'tour-datetime'
+  let TOUR_DATETIME = null
+  try {
+    TOUR_DATETIME = getValueForCustomField(
+      lineItem.custom_fields,
+      CUSTOM_FIELD_NAME
+    )
+  } catch (error) {
+    console.warn(error)
+  }
 
-  if (!tour_datetime) {
-    const now = new Date();
-
+  if (!TOUR_DATETIME) {
     const action = {
       type: WORKFLOW_ACTIONS.REQUIRE_CUSTOM_FIELD,
       title: '📆 Choose a tour time.',
@@ -29,10 +35,10 @@ export function tourTimeAction(lineItem, ctx) {
           title: 'Friday May 08 at 9:00 am',
         },
       ],
-    };
+    }
 
-    return action;
+    return action
   }
 
-  return null;
+  return null
 }

@@ -12,38 +12,39 @@ function lineItemActions(lineItem, ctx) {
   }
 
   const CUSTOM_FIELD = 'demo_rule'
-  const RULE = getValueForCustomField(
-    lineItem.product.custom_fields,
-    CUSTOM_FIELD
-  )
+
+  let RULE
+  try {
+    RULE = getValueForCustomField(lineItem.product.custom_fields, CUSTOM_FIELD)
+  } catch (error) {
+    throw new Error(`No rule on the product.`)
+  }
+
+  const LINE_ITEM_ACTIONS = ['workOrderForm']
+
+  if (LINE_ITEM_ACTIONS.includes(RULE)) {
+    throw new Error(`Not a line_item action: "${RULE}"`)
+  }
 
   if (typeof Actions[RULE] === 'undefined') {
     throw new Error(`No action with the name: "${RULE}"`)
   }
 
   const ruleAction = Actions[RULE](lineItem, ctx)
-  console.log('ruleAction', ruleAction)
 
   return ruleAction
 }
 
-export function readyForPayment(event) {
-  const lineItems = event.sale.line_items
+export function respondToLineItems(event) {
+  const lineItemsAdded = event.line_items
 
-  const actions = lineItems
+  const actions = lineItemsAdded
     .flatMap((lineItem, i) => {
-      console.log(`Line_item: ${i}`, lineItem)
+      console.log(`Added_line_item: ${i}`, lineItem)
 
-      // Returns
-      if (lineItem.quantity < 0) {
-        return Actions.itemReturn(lineItem, event)
-      }
-
-      // Line-item actions
       try {
-        const actions = lineItemActions(lineItem, event)
-        console.log('Actions: ', actions)
-        return actions
+        console.log(lineItemActions(lineItem, event))
+        return lineItemActions(lineItem, event)
       } catch (error) {
         console.warn(error)
       }

@@ -1,16 +1,8 @@
 import { WORKFLOW_ACTIONS } from '../_constants'
-import { getValueForCustomField } from '../_utils/customFields'
 
-export function requireIMEIAction(lineItem) {
-  let SERIAL = null
-  try {
-    SERIAL = getValueForCustomField(lineItem.custom_fields, 'serial')
-  } catch (error) {
-    console.warn(error)
-  }
-
+export function bottleDeposit(lineItem) {
   const action = {
-    type: WORKFLOW_ACTIONS.REQUIRE_CUSTOM_FIELD,
+    type: WORKFLOW_ACTIONS.ADD_LINE_ITEM,
     title: 'Enter IMEI.',
     message: 'Please enter the serial number for this product.',
     entity: 'line_item',
